@@ -1,0 +1,16 @@
+# Example Victoria Metrics Alerting Rules
+# Place your actual rules files in this directory
+
+groups:
+  - name: example
+    interval: 30s
+    rules:
+      - alert: HighMemoryUsage
+        expr: temperature{location="room1"} > 23
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High temperature detected"
+          description: "Temperature is above 23"
+

@@ -1,0 +1,25 @@
+# Example Victoria Metrics Alerting Rules
+# Place your actual rules files in this directory
+
+groups:
+  - name: example
+    interval: 30s
+    rules:
+      - alert: HighMemoryUsage
+        expr: vm_memory_usage_bytes / vm_memory_limit_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 90%"
+
+      - alert: HighCPUUsage
+        expr: rate(vm_cpu_usage_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80%"
+

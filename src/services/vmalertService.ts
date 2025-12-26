@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 interface ReplayRequest {
-  ruleFile: string
+  ruleFile: File
   startTime: string
   endTime: string
   datasourceUrl?: string
@@ -23,12 +23,24 @@ export async function replayVMAlert(request: ReplayRequest): Promise<ReplayRespo
     const startTimeRFC3339 = new Date(request.startTime).toISOString()
     const endTimeRFC3339 = new Date(request.endTime).toISOString()
 
-    const response = await axios.post<ReplayResponse>(`${API_BASE_URL}/vmalert/replay`, {
-      ruleFile: request.ruleFile,
-      startTime: startTimeRFC3339,
-      endTime: endTimeRFC3339,
-      datasourceUrl: request.datasourceUrl || 'http://localhost:8428'
-    })
+    // Create FormData for file upload
+    const formData = new FormData()
+    formData.append('ruleFile', request.ruleFile)
+    formData.append('startTime', startTimeRFC3339)
+    formData.append('endTime', endTimeRFC3339)
+    if (request.datasourceUrl) {
+      formData.append('datasourceUrl', request.datasourceUrl)
+    }
+
+    const response = await axios.post<ReplayResponse>(
+      `${API_BASE_URL}/vmalert/replay`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
 
     return response.data
   } catch (error: any) {

@@ -9,7 +9,8 @@ interface ReplayResult {
 }
 
 function VMAlertReplay() {
-  const [ruleFile, setRuleFile] = useState<string>('')
+  const [ruleFile, setRuleFile] = useState<File | null>(null)
+  const [ruleFileName, setRuleFileName] = useState<string>('')
   const [startTime, setStartTime] = useState<string>('')
   const [endTime, setEndTime] = useState<string>('')
   const [datasourceUrl, setDatasourceUrl] = useState<string>('http://localhost:8428')
@@ -18,6 +19,15 @@ function VMAlertReplay() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    
+    if (!ruleFile) {
+      setResult({
+        success: false,
+        error: 'Please select a rule file to upload'
+      })
+      return
+    }
+    
     setIsLoading(true)
     setResult(null)
 
@@ -41,13 +51,27 @@ function VMAlertReplay() {
       setIsLoading(false)
     }
   }
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setRuleFile(file)
+      setRuleFileName(file.name)
+    }
+  }
 
   const handleReset = () => {
-    setRuleFile('')
+    setRuleFile(null)
+    setRuleFileName('')
     setStartTime('')
     setEndTime('')
     setDatasourceUrl('http://localhost:8428')
     setResult(null)
+    // Reset file input
+    const fileInput = document.getElementById('ruleFile') as HTMLInputElement
+    if (fileInput) {
+      fileInput.value = ''
+    }
   }
 
   return (
@@ -62,19 +86,23 @@ function VMAlertReplay() {
       <form onSubmit={handleSubmit} className="replay-form">
         <div className="form-group">
           <label htmlFor="ruleFile">
-            Rule File Path <span className="required">*</span>
+            Rule File <span className="required">*</span>
           </label>
           <input
             id="ruleFile"
-            type="text"
-            value={ruleFile}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRuleFile(e.target.value)}
-            placeholder="/path/to/rules.yml"
+            type="file"
+            accept=".yml,.yaml,application/x-yaml,text/yaml"
+            onChange={handleFileChange}
             required
             className="form-input"
           />
+          {ruleFileName && (
+            <div className="file-name-display">
+              Selected: <strong>{ruleFileName}</strong>
+            </div>
+          )}
           <small className="form-help">
-            Path to the alerting rules file (YAML format)
+            Upload your alerting rules file (YAML format, max 5MB)
           </small>
         </div>
 

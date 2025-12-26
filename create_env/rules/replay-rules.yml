@@ -5,8 +5,8 @@ groups:
   - name: example
     interval: 30s
     rules:
-      - alert: HighMemoryUsage
-        expr: temperature{location="room1"} > 23
+      - alert: HighTemperature
+        expr: temperature{location="room1"} < 23
         for: 5m
         labels:
           severity: warning

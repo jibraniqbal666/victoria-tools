@@ -30,3 +30,7 @@ dist-ssr
 .env.development.local
 
 vmdata
+
+# Uploaded files
+uploads/
+server/uploads/

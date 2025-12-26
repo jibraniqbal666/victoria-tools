@@ -2,37 +2,16 @@ version: '3.8'
 
 services:
   victoria-tools:
+    container_name: victoria-tools
     build:
       context: .
       dockerfile: Dockerfile
     image: victoria-tools:latest
     ports:
-      - "3000:8080"
+      - "8080:8080"
     environment:
       - PORT=8080
       - VMALERT_PATH=/usr/local/bin/vmalert
-      - NODE_ENV=production
-    volumes:
-      # Mount rules directory if needed
-      - ./rules:/app/rules:ro
-    networks:
-      - victoria-network
+      - VITE_API_BASE_URL=http://localhost:8080/
+      - REMOTE_WRITE_URL=http://victoriametrics:8428
     restart: unless-stopped
-
-  # Optional: vmalert service for running alerts (separate from replay functionality)
-  # The victoria-tools container has its own vmalert binary for replay
-  # Uncomment if you need a separate vmalert instance for alerting
-  # vmalert:
-  #   image: victoriametrics/vmalert:latest
-  #   volumes:
-  #     - ./rules:/rules:ro
-  #   command:
-  #     - -rule=/rules/*.yml
-  #     - -datasource.url=http://localhost:8428
-  #   networks:
-  #     - victoria-network
-
-networks:
-  victoria-network:
-    driver: bridge
-

@@ -13,5 +13,6 @@ services:
       - PORT=8080
       - VMALERT_PATH=/usr/local/bin/vmalert
       - VITE_API_BASE_URL=http://localhost:8080/
-      - REMOTE_WRITE_URL=http://victoriametrics:8428
+      - DATASOURCE_URL=http://host.docker.internal:8428
+      - REMOTE_WRITE_URL=http://host.docker.internal:8428
     restart: unless-stopped

@@ -81,9 +81,11 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
 
   // Get vmalert path from environment or use default
   const vmalertPath = process.env.VMALERT_PATH || './vmalert-prod';
-  const datasource = datasourceUrl || 'http://localhost:8428';
+  // Use host.docker.internal for Docker containers, localhost for local development
+  const defaultDatasource = process.env.DATASOURCE_URL || 'http://localhost:8428';
+  const datasource = datasourceUrl || defaultDatasource;
   // remoteWrite.url is required for replay mode - use a dummy URL or optional from env
-  const remoteWriteUrl = process.env.REMOTE_WRITE_URL || 'http://localhost:8428';
+  const remoteWriteUrl = process.env.REMOTE_WRITE_URL || defaultDatasource;
 
   try {
     // Verify file exists

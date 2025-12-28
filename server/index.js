@@ -84,7 +84,7 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
   // Use host.docker.internal for Docker containers, localhost for local development
   const datasource = process.env.DATASOURCE_URL || 'http://localhost:8428';
   // remoteWrite.url is required for replay mode - use a dummy URL or optional from env
-  const remoteWriteUrl = process.env.REMOTE_WRITE_URL || defaultDatasource;
+  const remoteWriteUrl = process.env.REMOTE_WRITE_URL || 'http://localhost:8428';
 
   try {
     // Verify file exists

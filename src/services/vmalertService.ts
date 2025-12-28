@@ -4,14 +4,11 @@ interface ReplayRequest {
   ruleFile: File
   startTime: string
   endTime: string
-  datasourceUrl?: string
 }
 
 interface ReplayResponse {
   output: string
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 /**
  * Replay VM Alert rules against historical data
@@ -28,12 +25,9 @@ export async function replayVMAlert(request: ReplayRequest): Promise<ReplayRespo
     formData.append('ruleFile', request.ruleFile)
     formData.append('startTime', startTimeRFC3339)
     formData.append('endTime', endTimeRFC3339)
-    if (request.datasourceUrl) {
-      formData.append('datasourceUrl', request.datasourceUrl)
-    }
 
     const response = await axios.post<ReplayResponse>(
-      `${API_BASE_URL}/vmalert/replay`,
+      `/vmalert/replay`,
       formData,
       {
         headers: {

@@ -13,7 +13,6 @@ function VMAlertReplay() {
   const [ruleFileName, setRuleFileName] = useState<string>('')
   const [startTime, setStartTime] = useState<string>('')
   const [endTime, setEndTime] = useState<string>('')
-  const [datasourceUrl, setDatasourceUrl] = useState<string>('http://localhost:8428')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [result, setResult] = useState<ReplayResult | null>(null)
 
@@ -35,8 +34,7 @@ function VMAlertReplay() {
       const response = await replayVMAlert({
         ruleFile,
         startTime,
-        endTime,
-        datasourceUrl
+        endTime
       })
       setResult({
         success: true,
@@ -65,7 +63,6 @@ function VMAlertReplay() {
     setRuleFileName('')
     setStartTime('')
     setEndTime('')
-    setDatasourceUrl('http://localhost:8428')
     setResult(null)
     // Reset file input
     const fileInput = document.getElementById('ruleFile') as HTMLInputElement
@@ -140,23 +137,6 @@ function VMAlertReplay() {
               End time for the replay period
             </small>
           </div>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="datasourceUrl">
-            Datasource URL
-          </label>
-          <input
-            id="datasourceUrl"
-            type="url"
-            value={datasourceUrl}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatasourceUrl(e.target.value)}
-            placeholder="http://localhost:8428"
-            className="form-input"
-          />
-          <small className="form-help">
-            Victoria Metrics datasource URL (default: http://localhost:8428)
-          </small>
         </div>
 
         <div className="form-actions">

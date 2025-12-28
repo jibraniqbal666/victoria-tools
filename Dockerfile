@@ -50,6 +50,7 @@ EXPOSE 8080
 # Set environment variables
 ENV PORT=8080
 ENV NODE_ENV=production
+ENV VMALERT_PATH=/usr/local/bin/vmalert
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

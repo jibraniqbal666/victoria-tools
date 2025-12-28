@@ -11,6 +11,18 @@ A web application for managing and interacting with Victoria Metrics components,
 ## Screenshots
 ![Screenshot 1](./images/screenshot.png)
 
+## Usage
+
+```bash
+## Run
+docker run -d \
+  --name victoria-tools \
+  -p 3000:8080 \
+  -e DATASOURCE_URL=http://host.docker.internal:8428 \
+  -e REMOTE_WRITE_URL=http://host.docker.internal:8428 \
+  jibraniqbal95/victoria-tools:latest
+```
+
 ## Prerequisites
 
 - Node.js 18+ and npm

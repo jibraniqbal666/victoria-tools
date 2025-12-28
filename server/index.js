@@ -7,7 +7,7 @@ const multer = require('multer');
 
 const execAsync = promisify(exec);
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 
 // Configure multer for file uploads
 const uploadDir = path.join(__dirname, '../uploads');

@@ -42,12 +42,7 @@ The backend API will be available at `http://localhost:8080`
 
 Create a `.env` file in the root directory:
 
-```env
-VITE_API_BASE_URL=http://localhost:8080/api
-```
-
 For the server, you can set:
-- `PORT`: Server port (default: 8080)
 - `VMALERT_PATH`: Path to vmalert binary (default: 'vmalert' from PATH)
 
 ## Building for Production
@@ -69,7 +64,6 @@ docker build -t victoria-tools .
 # Run the container
 docker run -p 3000:8080 \
   -e VMALERT_PATH=/usr/local/bin/vmalert \
-  -v /path/to/rules:/app/rules:ro \
   victoria-tools
 ```
 

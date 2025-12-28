@@ -2,6 +2,7 @@
   "name": "victoria-tools-server",
   "version": "1.0.0",
   "description": "Backend server for Victoria Tools",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

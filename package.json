@@ -2,6 +2,7 @@
   "name": "victoria-tools",
   "version": "1.0.0",
   "description": "Web app for Victoria Metrics tools including vm alert replay",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "vite",

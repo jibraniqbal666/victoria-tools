@@ -8,6 +8,9 @@ A web application for managing and interacting with Victoria Metrics components,
 - **Tab-based UI**: Extensible interface for adding more Victoria Metrics tools in the future
 - **Container-ready**: Designed to run in containers where VM components like vmalert are available
 
+## Screenshots
+![Screenshot 1](./images/screenshot.png)
+
 ## Prerequisites
 
 - Node.js 18+ and npm

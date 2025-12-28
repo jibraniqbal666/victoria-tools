@@ -107,14 +107,12 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
     });
 
     // vmalert replay outputs to stderr for some information, stdout for results
-    const output = stdout || stderr || 'Replay completed successfully';
+    const output = (stdout || stderr || 'Replay completed successfully').trim();
 
     console.log(`Command output (stdout): ${stdout}`);
     console.log(`Command output (stderr): ${stderr}`);
 
-    res.json({
-      output: output.trim()
-    });
+    res.json({ output });
 
     // Clean up uploaded file after successful execution
     if (uploadedFile && fs.existsSync(ruleFilePath)) {
@@ -128,23 +126,12 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
       console.log(`Cleaned up uploaded file after error: ${ruleFilePath}`);
     }
     console.error('Error executing vmalert replay:', error);
-    console.error('Error details:', {
-      message: error.message,
-      stderr: error.stderr,
-      stdout: error.stdout,
-      code: error.code,
-      signal: error.signal
-    });
 
     // Extract error message with more details
-    let errorMessage = 'Unknown error occurred';
-    if (error.stderr) {
-      errorMessage = error.stderr.toString();
-    } else if (error.stdout) {
-      errorMessage = error.stdout.toString();
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
+    const errorMessage = error.stderr?.toString() || 
+                        error.stdout?.toString() || 
+                        error.message || 
+                        'Unknown error occurred';
 
     res.status(500).json({
       error: `Failed to execute vmalert replay: ${errorMessage}`
@@ -159,7 +146,7 @@ app.get('/health', (req, res) => {
 
 // Serve frontend for all other routes
 app.get('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {

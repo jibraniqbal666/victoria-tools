@@ -33,10 +33,10 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     // Accept only YAML files
-    if (file.mimetype === 'application/x-yaml' || 
-        file.mimetype === 'text/yaml' ||
-        file.originalname.endsWith('.yml') ||
-        file.originalname.endsWith('.yaml')) {
+    if (file.mimetype === 'application/x-yaml' ||
+      file.mimetype === 'text/yaml' ||
+      file.originalname.endsWith('.yml') ||
+      file.originalname.endsWith('.yaml')) {
       cb(null, true);
     } else {
       cb(new Error('Only YAML files are allowed'));
@@ -66,7 +66,7 @@ app.use((req, res, next) => {
  * Accepts a rule file upload
  */
 app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
-  const { startTime, endTime, datasourceUrl } = req.body;
+  const { startTime, endTime } = req.body;
   const uploadedFile = req.file;
 
   // Validate required fields
@@ -82,8 +82,7 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
   // Get vmalert path from environment or use default
   const vmalertPath = process.env.VMALERT_PATH || './vmalert-prod';
   // Use host.docker.internal for Docker containers, localhost for local development
-  const defaultDatasource = process.env.DATASOURCE_URL || 'http://localhost:8428';
-  const datasource = datasourceUrl || defaultDatasource;
+  const datasource = process.env.DATASOURCE_URL || 'http://localhost:8428';
   // remoteWrite.url is required for replay mode - use a dummy URL or optional from env
   const remoteWriteUrl = process.env.REMOTE_WRITE_URL || defaultDatasource;
 
@@ -94,14 +93,14 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
         error: `Rule file not found: ${ruleFilePath}`
       });
     }
-    
+
     // Build vmalert replay command with file path
     // vmalert uses -replay.timeFrom and -replay.timeTo flags, not a "replay" subcommand
     // remoteWrite.url is required for replay mode (even if we don't actually write)
     const command = `${vmalertPath} -rule="${ruleFilePath}" -replay.timeFrom="${startTime}" -replay.timeTo="${endTime}" -datasource.url="${datasource}" -remoteWrite.url="${remoteWriteUrl}" -replay.disableProgressBar`;
-    
+
     console.log(`Executing: ${command}`);
-    
+
     const { stdout, stderr } = await execAsync(command, {
       maxBuffer: 10 * 1024 * 1024, // 10MB buffer
       timeout: 300000 // 5 minutes timeout
@@ -109,14 +108,14 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
 
     // vmalert replay outputs to stderr for some information, stdout for results
     const output = stdout || stderr || 'Replay completed successfully';
-    
+
     console.log(`Command output (stdout): ${stdout}`);
     console.log(`Command output (stderr): ${stderr}`);
 
     res.json({
       output: output.trim()
     });
-    
+
     // Clean up uploaded file after successful execution
     if (uploadedFile && fs.existsSync(ruleFilePath)) {
       fs.unlinkSync(ruleFilePath);
@@ -136,7 +135,7 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
       code: error.code,
       signal: error.signal
     });
-    
+
     // Extract error message with more details
     let errorMessage = 'Unknown error occurred';
     if (error.stderr) {
@@ -146,7 +145,7 @@ app.post('/vmalert/replay', upload.single('ruleFile'), async (req, res) => {
     } else if (error.message) {
       errorMessage = error.message;
     }
-    
+
     res.status(500).json({
       error: `Failed to execute vmalert replay: ${errorMessage}`
     });
@@ -160,7 +159,7 @@ app.get('/health', (req, res) => {
 
 // Serve frontend for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.status(404).json({ error: 'Route not found' });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
